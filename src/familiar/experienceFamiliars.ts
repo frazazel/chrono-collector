@@ -11,7 +11,7 @@ type ExperienceFamiliar = {
 };
 
 const experienceFamiliars: ExperienceFamiliar[] = [
-  {
+  /*{
     familiar: $familiar`Pocket Professor`,
     used: "_thesisDelivered",
     useValue: 11 * get("valueOfAdventure"),
@@ -20,7 +20,7 @@ const experienceFamiliars: ExperienceFamiliar[] = [
     familiar: $familiar`Grey Goose`,
     used: "_meatifyMatterUsed",
     useValue: 15 ** 4,
-  },
+  },*/
 ];
 
 function valueExperienceFamiliar({ familiar, useValue }: ExperienceFamiliar): GeneralFamiliar {

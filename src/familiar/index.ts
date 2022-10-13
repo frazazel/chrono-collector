@@ -11,4 +11,5 @@ export const chooseFamiliar = () =>
     ? $familiars`Reagnimated Gnome, Temporal Riftlet`.find((f) => have(f)) ?? freeFightFamiliar()
     : freeFightFamiliar();
 export const chooseFamEquip = (fam: Familiar) =>
-  fam === $familiar`Reagnimated Gnome` ? $item`gnomish housemaid's kgnee` : $item`tiny stillsuit`;
+	fam === $familiar`Reagnimated Gnome` ? $item`gnomish housemaid's kgnee` :
+		(fam === $familiar`Shorter-Order Cook` ? $item`tiny stillsuit` : $item`oversized fish scaler`);

@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "grimoire-kolmafia": "^0.3.7",
-    "kolmafia": "^5.26833.0",
+    "kolmafia": "^5.26840.0",
     "libram": "^0.7.3"
   },
   "devDependencies": {

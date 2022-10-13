@@ -18,14 +18,16 @@ function roseOutfit(): OutfitSpec {
     ...ifHave("weapon", $item`June cleaver`),
     ...ifHave("offhand", $item`carnivorous potted plant`),
     ...ifHave("acc1", $item`mafia thumb ring`),
-    ...ifHave("acc2", $item`time-twitching toolbelt`),
+ //   ...ifHave("acc2", $item`time-twitching toolbelt`),
+    ...ifHave("acc2", $item`Mr. Cheeng's spectacles`),
     ...ifHave("acc3", $item`lucky gold ring`),
     ...(get("_mayflySummons") < 30 ? ifHave("acc3", $item`mayfly bait necklace`) : {}),
     ...ifHave("famequip", famequip),
     ...ifHave("back", $item`Time Cloak`),
-    ...(25 * get("_sweatOutSomeBoozeUsed") + get("sweat") < 75
+	...ifHave("pants", $item`designer sweatpants`),
+    /*...(25 * get("_sweatOutSomeBoozeUsed") + get("sweat") < 75
       ? ifHave("pants", $item`designer sweatpants`)
-      : {}),
+      : {}),*/
     familiar,
     modifier: $familiars`Reagnimated Gnome, Temporal Riftlet`.includes(familiar)
       ? "Familiar Weight"

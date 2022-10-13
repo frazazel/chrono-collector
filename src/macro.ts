@@ -52,7 +52,8 @@ export default class Macro extends StrictMacro {
         }
       }
     } else {
-      steps.tryHaveItem($item`seal tooth`);
+		steps.tryHaveItem($item`spectre scepter`);
+    	//steps.tryHaveItem($item`seal tooth`);
     }
     return this.step(steps);
   }
@@ -81,6 +82,9 @@ export default class Macro extends StrictMacro {
       .tryHaveSkill($skill`Extract`)
       .tryHaveSkill($skill`Micrometeorite`)
       .doItems()
+	  .tryHaveSkill($skill`Audioclasm`)
+	  .tryHaveSkill($skill`Nanoshock`)
+	  .tryHaveSkill($skill`Nantlers`)
       .attack()
       .repeat();
   }

@@ -1,5 +1,5 @@
 import { OutfitSlot, OutfitSpec } from "grimoire-kolmafia";
-import { Item } from "kolmafia";
+import { cliExecute, Item } from "kolmafia";
 
 import { $familiars, $item, $location, get, getKramcoWandererChance, have } from "libram";
 import { ChronerQuest, ChronerStrategy } from "./engine";
@@ -14,7 +14,10 @@ function roseOutfit(): OutfitSpec {
   const ifHave = (slot: OutfitSlot, item: Item): OutfitSpec =>
     have(item) ? Object.fromEntries([[slot, item]]) : {};
 
+	cliExecute("parka ghostasaurus");
+
   return {
+    ...ifHave("hat", $item`reinforced beaded headband`),
     ...ifHave("weapon", $item`June cleaver`),
     ...ifHave("offhand", $item`carnivorous potted plant`),
     ...ifHave("acc1", $item`mafia thumb ring`),
@@ -23,11 +26,12 @@ function roseOutfit(): OutfitSpec {
     ...ifHave("acc3", $item`lucky gold ring`),
     ...(get("_mayflySummons") < 30 ? ifHave("acc3", $item`mayfly bait necklace`) : {}),
     ...ifHave("famequip", famequip),
+    ...ifHave("shirt", $item`Jurassic Parka`),
     ...ifHave("back", $item`Time Cloak`),
 	...ifHave("pants", $item`designer sweatpants`),
-    /*...(25 * get("_sweatOutSomeBoozeUsed") + get("sweat") < 75
+    ...(25 * get("_sweatOutSomeBoozeUsed") + get("sweat") < 75
       ? ifHave("pants", $item`designer sweatpants`)
-      : {}),*/
+      : {}),
     familiar,
     modifier: $familiars`Reagnimated Gnome, Temporal Riftlet`.includes(familiar)
       ? "Familiar Weight"

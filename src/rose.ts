@@ -1,10 +1,18 @@
 import { OutfitSlot, OutfitSpec } from "grimoire-kolmafia";
-import { cliExecute, Item } from "kolmafia";
+import { cliExecute, Item, myLocation } from "kolmafia";
+import {
+  $familiars,
+  $item,
+  $location,
+  FloristFriar,
+  get,
+  getKramcoWandererChance,
+  have,
+} from "libram";
 
-import { $familiars, $item, $location, get, getKramcoWandererChance, have } from "libram";
 import { ChronerQuest, ChronerStrategy } from "./engine";
 import { chooseFamEquip, chooseFamiliar } from "./familiar";
-import { sober } from "./lib";
+import { ifHave, sober } from "./lib";
 import Macro from "./macro";
 
 function roseOutfit(): OutfitSpec {
@@ -24,14 +32,21 @@ function roseOutfit(): OutfitSpec {
  //   ...ifHave("acc2", $item`time-twitching toolbelt`),
     ...ifHave("acc2", $item`Mr. Cheeng's spectacles`),
     ...ifHave("acc3", $item`lucky gold ring`),
-    ...(get("_mayflySummons") < 30 ? ifHave("acc3", $item`mayfly bait necklace`) : {}),
+    ...ifHave("acc3", $item`mayfly bait necklace`, () => get("_mayflySummons") < 30),
     ...ifHave("famequip", famequip),
     ...ifHave("shirt", $item`Jurassic Parka`),
     ...ifHave("back", $item`Time Cloak`),
 	...ifHave("pants", $item`designer sweatpants`),
-    ...(25 * get("_sweatOutSomeBoozeUsed") + get("sweat") < 75
-      ? ifHave("pants", $item`designer sweatpants`)
-      : {}),
+    ...ifHave(
+      "pants",
+      $item`designer sweatpants`,
+      () => 25 * get("_sweatOutSomeBoozeUsed") + get("sweat") < 75
+    ),
+    ...ifHave(
+      "offhand",
+      $item`cursed magnifying glass`,
+      () => get("_voidFreeFights") < 5 && get("cursedMagnifyingGlassCount") < 13
+    ),
     familiar,
     modifier: $familiars`Reagnimated Gnome, Temporal Riftlet`.includes(familiar)
       ? "Familiar Weight"
@@ -39,11 +54,29 @@ function roseOutfit(): OutfitSpec {
   };
 }
 
+const location = $location`Globe Theatre Main Stage`;
+let triedFlorist = false;
 export const rose: ChronerQuest = {
   name: "Rose",
-  location: $location`Globe Theatre Main Stage`,
+  location,
   outfit: roseOutfit,
   tasks: [
+    {
+      name: "Flowers",
+      ready: () => FloristFriar.have() && myLocation() === location,
+      completed: () => FloristFriar.isFull() || triedFlorist,
+      do: () => {
+        const flowers = [
+          FloristFriar.ArcticMoss,
+          FloristFriar.SpiderPlant,
+          FloristFriar.BamBoo,
+          ...FloristFriar.flowersAvailableFor(location),
+        ];
+        for (const flower of flowers) flower.plant();
+        triedFlorist = true;
+      },
+      sobriety: "either",
+    },
     {
       name: "Chroner",
       completed: () => false,

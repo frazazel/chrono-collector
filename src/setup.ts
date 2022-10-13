@@ -36,6 +36,19 @@ export const setup: Quest<ChronerTask> = {
       sobriety: "either",
     },
     {
+      name: "Disco Nap",
+      ready: () => have($skill`Disco Nap`) && have($skill`Adventurer of Leisure`),
+      completed: () => poisons.every((e) => !have(e)),
+      do: () => useSkill($skill`Disco Nap`),
+      sobriety: "either",
+    },
+    {
+      name: "Antidote",
+      completed: () => poisons.every((e) => !have(e)),
+      do: () => poisons.forEach((e) => uneffect(e)),
+      sobriety: "either",
+    },
+    {
       name: "Recover",
       ready: () => have($skill`Cannelloni Cocoon`),
       completed: () => myHp() / myMaxhp() >= 0.5,
@@ -50,12 +63,6 @@ export const setup: Quest<ChronerTask> = {
       do: () => {
         throw "Unable to heal above 50% HP, heal yourself!";
       },
-      sobriety: "either",
-    },
-    {
-      name: "Antidote",
-      completed: () => poisons.every((e) => !have(e)),
-      do: () => poisons.forEach((e) => uneffect(e)),
       sobriety: "either",
     },
     {
@@ -77,7 +84,9 @@ export const setup: Quest<ChronerTask> = {
     },
     {
       name: "Closet Hobo Nickels",
-      completed: () => itemAmount($item`hobo nickel`) === 0 || (!have($familiar`Hobo Monkey`) && !have($item`hobo nickel`, 1000)),
+      completed: () =>
+        itemAmount($item`hobo nickel`) === 0 ||
+        (!have($familiar`Hobo Monkey`) && !have($item`hobo nickel`, 1000)),
       do: () => putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`),
       sobriety: "either",
     },

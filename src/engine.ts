@@ -15,6 +15,7 @@ export type ChronerQuest = Quest<ChronerTask> & {
   outfit: () => OutfitSpec;
 };
 
+const introAdventures = ["The Cave Before Time"];
 export class ChronerStrategy extends CombatStrategy {
   constructor(macro: Macro) {
     super();
@@ -65,14 +66,18 @@ export class ChronerEngine extends Engine<never, ChronerTask> {
           ])
         )
       );
-      this.propertyManager.setChoices({ 955: 2 });
     }
+    this.propertyManager.setChoices({ 955: 2 });
   }
 
   shouldRepeatAdv(task: ChronerTask): boolean {
     if (["Poetic Justice", "Lost and Found"].includes(get("lastEncounter"))) {
       printd("Skipping repeating Adventure despite free NC (beaten up)");
       return false;
+    }
+    if (introAdventures.includes(get("lastEncounter"))) {
+      printd(`Hit Intro adventure ${get("lastEncounter")} which is a free NC`);
+      return true;
     }
     return super.shouldRepeatAdv(task);
   }

@@ -24,28 +24,10 @@ import {
 
 import { capsule } from "./capsule";
 import { ChronerEngine, ChronerQuest, ChronerStrategy, ChronerTask, resetNcForced } from "./engine";
-import { enableDebug, printd, printh } from "./lib";
+import { args, printd, printh } from "./lib";
 import Macro from "./macro";
 import { rose } from "./rose";
 import { setup } from "./setup";
-
-const args = Args.create("chrono", "A script for farming chroner", {
-  turns: Args.number({
-    help: "The number of turns to run (use negative numbers for the number of turns remaining)",
-    default: Infinity,
-  }),
-  mode: Args.string({
-    options: [
-      ["rose", "Farm Roses from The Main Stage"],
-      ["capsule", "Farm Time Capsules from the Cave Before Time"],
-    ],
-    default: "rose",
-  }),
-  debug: Args.flag({
-    help: "Turn on debug printing",
-    default: false,
-  }),
-});
 
 export function main(command?: string) {
   Args.fill(args, command);
@@ -53,9 +35,6 @@ export function main(command?: string) {
   if (args.help) {
     Args.showHelp(args);
     return;
-  }
-  if (args.debug) {
-    enableDebug();
   }
 
   sinceKolmafiaRevision(26834);
@@ -145,6 +124,16 @@ export function main(command?: string) {
         sobriety: "either",
       },
       {
+        name: "Void Monster",
+        ready: () =>
+          have($item`cursed magnifying glass`) && get("cursedMagnifyingGlassCount") === 13,
+        completed: () => get("_voidFreeFights") >= 5,
+        outfit: () => ({ ...quest.outfit(), offhand: $item`cursed magnifying glass` }),
+        do: quest.location,
+        sobriety: "sober",
+        combat: new ChronerStrategy(Macro.standardCombat()),
+      },
+      {
         name: "Time Capsule",
         do: () => {
           adv1($location`The Cave Before Time`, 0, "");
@@ -168,7 +157,8 @@ export function main(command?: string) {
         sobriety: "either",
         completed: () => false,
         combat: new ChronerStrategy(Macro.standardCombat()),
-      }, {
+      },
+      {
         name: "Spikolodon Spikes",
         ready: () =>
           have($item`Jurassic Parka`) &&
@@ -196,14 +186,28 @@ export function main(command?: string) {
         completed: () => false,
         combat: new ChronerStrategy(
           Macro.tryHaveSkill($skill`Summon Mayfly Swarm`)
+            .tryHaveSkill($skill`Curse of Weaksauce`)
             .trySkill($skill`Bowl a Curveball`)
             .abort()
         ),
       },
       {
+        name: "Asdon Bumper",
+        ready: () => AsdonMartin.installed(),
+        completed: () => get("banishedMonsters").includes("Spring-Loaded Front Bumper"),
+        sobriety: "sober",
+        do: $location`The Cave Before Time`,
+        combat: new ChronerStrategy(
+          Macro.tryHaveSkill($skill`Summon Mayfly Swarm`)
+            .skill($skill`Asdon Martin: Spring-Loaded Front Bumper`)
+            .abort()
+        ),
+        prepare: () => AsdonMartin.fillTo(50),
+      },
+      {
         name: "Asdon Missle",
         ready: () => AsdonMartin.installed(),
-        completed: () => get("_missileLauncherUsed") || have($effect`Everything Looks Yellow`),
+        completed: () => get("_missileLauncherUsed"),
         combat: new ChronerStrategy(
           Macro.tryHaveSkill($skill`Summon Mayfly Swarm`)
             .skill($skill`Asdon Martin: Missile Launcher`)

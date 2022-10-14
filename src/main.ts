@@ -1,14 +1,17 @@
 import { Args, getTasks, Quest } from "grimoire-kolmafia";
 import {
   adv1,
+  canAdventure,
   cliExecute,
   getLocationMonsters,
   myAdventures,
+  myClass,
   myTurncount,
   totalTurnsPlayed,
   use,
 } from "kolmafia";
 import {
+  $class,
   $effect,
   $item,
   $location,
@@ -234,6 +237,14 @@ export function main(command?: string) {
             .skill($skill`Spit jurassic acid`)
             .abort()
         ),
+        sobriety: "sober",
+      },
+      {
+        name: "Grey You Attack Skill",
+        completed: () => have($skill`Nantlers`) || have($skill`Nanoshock`) || have($skill`Audioclasm`),
+        do: $location`The Haunted Storage Room`,
+        ready: () => myClass() === $class`Grey Goo` && canAdventure($location`The Haunted Storage Room`),
+        combat: new ChronerStrategy(Macro.standardCombat()),
         sobriety: "sober",
       },
     ],
